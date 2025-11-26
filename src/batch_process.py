@@ -37,8 +37,12 @@ def run_merge_srt(config: dict):
         print(f"Error: Subtitles folder not found: {subtitles_folder}")
         return False
     
+    # Get path to merge_srt.py in the same directory
+    script_dir = Path(__file__).parent
+    merge_script = script_dir / "merge_srt.py"
+
     cmd = [
-        'python', 'merge_srt.py',
+        'python', str(merge_script),
         subtitles_folder,
         merged_output
     ]
@@ -90,9 +94,13 @@ def run_sentence_extractor(config: dict):
     subtitles_folder = config['subtitles_folder']
     anki_output = config.get('anki_output', 'anki_cards.tsv')
     
+    # Get path to sentence_extractor_enhanced.py in the same directory
+    script_dir = Path(__file__).parent
+    extractor_script = script_dir / "sentence_extractor_enhanced.py"
+
     # Build command
     cmd = [
-        'python', 'sentence_extractor_enhanced.py',
+        'python', str(extractor_script),
         wordlist,
         subtitles_folder,
         '-o', anki_output
