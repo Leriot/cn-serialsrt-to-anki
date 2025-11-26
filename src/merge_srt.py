@@ -159,17 +159,17 @@ def merge_srt_files(folder: str, output_file: str):
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write('\n'.join(all_lines))
 
-    print(f"✓ Wrote {len(all_lines)} lines")
+    print(f"[OK] Wrote {len(all_lines)} lines")
 
     # Write output with episode markers
     print(f"\nWriting output with episode markers to: {output_with_episodes}")
     with open(output_with_episodes, 'w', encoding='utf-8') as f:
         f.write('\n'.join(all_lines_with_markers))
 
-    print(f"✓ Wrote {len(all_lines_with_markers)} lines")
+    print(f"[OK] Wrote {len(all_lines_with_markers)} lines")
 
     print("\n" + "="*60)
-    print("✓ Merge complete!")
+    print("[OK] Merge complete!")
     print("="*60)
     print(f"\nFiles created:")
     print(f"  1. {output_file}")
