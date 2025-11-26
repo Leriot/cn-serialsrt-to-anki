@@ -330,13 +330,13 @@ class ChineseSubtitleToAnkiGUI:
 
             if result.returncode == 0:
                 self.log("")
-                self.log("✓ Merge completed successfully!")
-                self.log(f"✓ Next: Open {merged_output} in Chinese Text Analyzer")
+                self.log("[SUCCESS] Merge completed successfully!")
+                self.log(f"[NEXT] Open {merged_output} in Chinese Text Analyzer")
                 messagebox.showinfo("Success", "SRT merge completed!\n\n"
                                              f"Next step: Open {merged_output} in Chinese Text Analyzer")
             else:
                 self.log("")
-                self.log("✗ Merge failed!")
+                self.log("[ERROR] Merge failed!")
                 messagebox.showerror("Error", "Merge failed. Check the log for details.")
 
         except Exception as e:
@@ -440,13 +440,13 @@ class ChineseSubtitleToAnkiGUI:
 
             if result.returncode == 0:
                 self.log("")
-                self.log("✓ Anki card generation completed!")
-                self.log(f"✓ Import {anki_output} into Anki")
+                self.log("[SUCCESS] Anki card generation completed!")
+                self.log(f"[NEXT] Import {anki_output} into Anki")
                 messagebox.showinfo("Success", "Anki cards generated!\n\n"
                                              f"Next step: Import {anki_output} into Anki")
             else:
                 self.log("")
-                self.log("✗ Generation failed!")
+                self.log("[ERROR] Generation failed!")
                 messagebox.showerror("Error", "Generation failed. Check the log for details.")
 
         except Exception as e:
