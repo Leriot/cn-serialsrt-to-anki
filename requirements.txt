@@ -1,0 +1,12 @@
+# Enhanced Chinese Subtitle to Anki Workflow
+# Install with: pip install -r requirements.txt
+
+# Original dependencies
+opencc-python-reimplemented>=0.1.7
+
+# NEW: Translation
+deepl>=1.16.1
+
+# Optional: For better HTTP handling
+requests>=2.31.0
+urllib3>=2.0.0
