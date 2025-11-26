@@ -19,6 +19,7 @@ import json
 import subprocess
 from pathlib import Path
 import threading
+from cedict_manager import CEDICTParser
 
 
 class ChineseSubtitleToAnkiGUI:
@@ -91,6 +92,22 @@ class ChineseSubtitleToAnkiGUI:
         title_label = ttk.Label(main_frame, text="Chinese Subtitle to Anki Converter",
                                 font=('Arial', 16, 'bold'))
         title_label.grid(row=row, column=0, columnspan=3, pady=(0, 20))
+        row += 1
+
+        # ===== Dictionary Setup =====
+        dict_frame = ttk.LabelFrame(main_frame, text="Dictionary Setup", padding="5")
+        dict_frame.grid(row=row, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
+        
+        self.dict_status_var = tk.StringVar(value="Checking status...")
+        ttk.Label(dict_frame, text="Status:").pack(side=tk.LEFT, padx=5)
+        ttk.Label(dict_frame, textvariable=self.dict_status_var, font=('Arial', 9, 'bold')).pack(side=tk.LEFT, padx=5)
+        
+        self.download_btn = ttk.Button(dict_frame, text="Download CC-CEDICT", command=self.download_dictionary)
+        self.download_btn.pack(side=tk.RIGHT, padx=5)
+        
+        # Check status initially
+        self.check_dictionary_status()
+        
         row += 1
 
         # ===== STEP 1: Merge SRT Files =====
@@ -456,6 +473,46 @@ class ChineseSubtitleToAnkiGUI:
         finally:
             # Re-enable button
             self.generate_button.config(state='normal')
+
+
+    def check_dictionary_status(self):
+        """Check if dictionary file exists and update status."""
+        if os.path.exists("cedict_ts.u8"):
+            self.dict_status_var.set("Ready (cedict_ts.u8 found)")
+            self.download_btn.config(state='normal', text="Redownload")
+        else:
+            self.dict_status_var.set("Not Found (Required for definitions)")
+            self.download_btn.config(state='normal', text="Download CC-CEDICT")
+
+    def download_dictionary(self):
+        """Download dictionary in background thread."""
+        self.download_btn.config(state='disabled')
+        self.dict_status_var.set("Downloading...")
+        
+        thread = threading.Thread(target=self._run_download_thread)
+        thread.daemon = True
+        thread.start()
+
+    def _run_download_thread(self):
+        """Run download in background."""
+        try:
+            self.log("="*60)
+            self.log("Downloading CC-CEDICT dictionary...")
+            
+            parser = CEDICTParser()
+            parser.download()
+            
+            self.log("[SUCCESS] Dictionary downloaded successfully!")
+            self.root.after(0, self.check_dictionary_status)
+            messagebox.showinfo("Success", "Dictionary downloaded successfully!")
+            
+        except Exception as e:
+            self.log(f"[ERROR] Download failed: {str(e)}")
+            self.root.after(0, lambda: self.dict_status_var.set("Download Failed"))
+            messagebox.showerror("Error", f"Download failed: {str(e)}")
+        
+        finally:
+            self.root.after(0, lambda: self.download_btn.config(state='normal'))
 
 
 def main():
