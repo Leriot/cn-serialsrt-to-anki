@@ -146,13 +146,12 @@ class CEDICTParser:
         first = results[0]
         
         # Format: pinyin: definition
-        # If multiple results, indicate with [+N more]
-        result = f"{first['pinyin']}: {first['definition']}"
+        # Return all definitions, separated by newlines
+        formatted_results = []
+        for r in results:
+            formatted_results.append(f"{r['pinyin']}: {r['definition']}")
         
-        if len(results) > 1:
-            result += f" [+{len(results)-1} more]"
-        
-        return result
+        return "\n".join(formatted_results)
 
 
 def main():
