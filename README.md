@@ -1,281 +1,248 @@
-# Enhanced Chinese Subtitle Learning Workflow
+# Chinese Subtitle to Anki Converter
 
-Complete workflow for creating Anki flashcards from Chinese subtitles with DeepL translations and CC-CEDICT definitions.
+Convert Chinese subtitles (SRT files) into Anki flashcards with translations and definitions!
 
-## 🆕 New Features
+## ✨ Features
 
-- **DeepL Translation**: Automatically translate example sentences to English (or any language)
-- **CC-CEDICT Definitions**: Local dictionary lookups with pinyin and definitions
-- **Extended Anki Cards**: 13 fields including translations and definitions
+- **🖥️ User-Friendly GUI** - Easy-to-use graphical interface for the complete workflow
+- **📁 SRT File Merging** - Combine multiple subtitle files into one for analysis
+- **🔤 Chinese Text Analysis** - Integration with Chinese Text Analyzer for word selection
+- **🌐 DeepL Translation** - Automatic translation of example sentences (50+ languages)
+- **📚 CC-CEDICT Definitions** - Local dictionary lookups with pinyin and definitions
+- **🎴 Rich Anki Cards** - 13-field flashcards with context, translations, and definitions
 
-## 📋 Requirements
+## 🚀 Quick Start
+
+### Installation
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/yourusername/cn-serialsrt-to-anki.git
+   cd cn-serialsrt-to-anki
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Get a free DeepL API key from [DeepL](https://www.deepl.com/pro-api) (500,000 chars/month free)
+
+### Using the GUI (Recommended)
+
+Launch the graphical interface:
+
+```bash
+python run_gui.py
+```
+
+The GUI guides you through 3 easy steps:
+
+1. **Merge SRT Files** - Select your subtitles folder and merge into a single text file
+2. **Process in Chinese Text Analyzer** - Select words to learn and export
+3. **Generate Anki Cards** - Automatic translation and definition lookup
+
+### Using the Command Line
+
+#### Step 1: Merge SRT Files
+
+```bash
+python src/merge_srt.py "Subtitles Folder" merged_output.txt
+```
+
+This creates two files:
+- `merged_output.txt` - Plain text for Chinese Text Analyzer
+- `merged_output_with_episodes.txt` - With episode markers for reference
+
+#### Step 2: Process in Chinese Text Analyzer
+
+1. Open `merged_output.txt` in [Chinese Text Analyzer](https://www.chinesetextanalyser.com/)
+2. Select words you want to learn
+3. Export word list in this format:
+   ```
+   殿下	殿下[殿下]	diàn xià
+   苏	苏[囌]	sū
+   苏	苏[蘇]	Sū
+   ```
+
+#### Step 3: Generate Anki Cards
+
+```bash
+python src/sentence_extractor_enhanced.py \
+    wordlist.tsv \
+    "Subtitles Folder" \
+    --output anki_cards.tsv \
+    --deepl-key YOUR_API_KEY \
+    --target-lang EN-US
+```
+
+#### Step 4: Import to Anki
+
+1. Open Anki
+2. Import `anki_cards.tsv`
+3. Use **Tab** as field separator
+4. Map fields to your note type
+5. Start learning!
+
+### Automated Workflow (Advanced)
+
+Use the batch processor for automated runs:
+
+```bash
+# Create example config
+python src/batch_process.py --create-config
+
+# Edit config_example.json with your settings
+
+# Run automated workflow
+python src/batch_process.py config_example.json
+```
+
+## 📂 Project Structure
+
+```
+cn-serialsrt-to-anki/
+├── run_gui.py              # GUI launcher (start here!)
+├── requirements.txt        # Python dependencies
+│
+├── src/                    # Core scripts
+│   ├── gui.py             # Graphical user interface
+│   ├── merge_srt.py       # SRT file merger
+│   ├── sentence_extractor_enhanced.py  # Main processing engine
+│   ├── cedict_manager.py  # Dictionary manager
+│   └── batch_process.py   # Automated workflow
+│
+├── docs/                   # Documentation
+│   ├── README.md          # Detailed feature documentation
+│   └── QUICKSTART.md      # Quick start guide
+│
+└── data/                   # Runtime data
+    └── cedict_ts.u8       # CC-CEDICT dictionary (auto-downloaded)
+```
+
+## 🔧 Configuration Options
+
+### DeepL Translation
+
+Set your API key in the GUI or via environment variable:
+
+```bash
+export DEEPL_API_KEY="your-key-here"
+```
+
+**Supported Languages:**
+- `EN-US`, `EN-GB` - English (US/British)
+- `CS` - Czech
+- `DE` - German
+- `ES` - Spanish
+- `FR` - French
+- `IT` - Italian
+- `JA` - Japanese
+- `PL` - Polish
+- `PT` - Portuguese
+- `RU` - Russian
+- `ZH` - Chinese
+- And many more!
+
+### Advanced Options
+
+For CLI users, see additional options:
+
+```bash
+python src/sentence_extractor_enhanced.py --help
+```
+
+Options include:
+- `--min-length` - Minimum sentence length
+- `--include-empty` - Include words without example sentences
+- `--no-translate` - Skip translation
+- `--no-definitions` - Skip dictionary lookups
+- `--cedict-path` - Custom dictionary path
+
+## 📊 Anki Card Fields
+
+Generated cards include 13 fields:
+
+1. **Cloze** - Sentence with target word hidden
+2. **Simplified** - Simplified Chinese word
+3. **Traditional** - Traditional Chinese variant(s)
+4. **Traditional (alt)** - Alternative traditional forms
+5. **Pinyin** - Pronunciation
+6. **Pinyin (alt)** - Alternative pronunciations
+7. **Definition** - English definition from CC-CEDICT
+8. **Translation** - DeepL translation of example sentence
+9. **Example (Simplified)** - Example sentence in simplified Chinese
+10. **Example (Traditional)** - Example sentence in traditional Chinese
+11. **Definition (alt)** - Alternative definitions
+12. **Is Proper Noun** - Flag for proper nouns (names, places)
+13. **Full Sentence** - Complete original sentence
+
+## 🔍 Example Workflow
+
+**Scenario:** You're watching the Chinese drama "隐秘的角落" and want to learn vocabulary from it.
+
+1. **Collect subtitles** - Download SRT files for each episode
+2. **Launch GUI** - Run `python run_gui.py`
+3. **Merge** - Select subtitle folder, click "Run Merge"
+4. **Analyze** - Open merged file in Chinese Text Analyzer, select 200 words
+5. **Generate** - Enter DeepL key, select CTA export, click "Generate Anki Cards"
+6. **Learn** - Import cards to Anki and start studying!
+
+Result: 200 personalized flashcards with context from your favorite show!
+
+## 🐛 Troubleshooting
+
+### GUI won't start
+
+Make sure tkinter is installed:
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install python3-tk
+
+# macOS (included with Python)
+# Windows (included with Python)
+```
+
+### "No module named 'deepl'"
+
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### DeepL API Key
+### DeepL API errors
 
-Get a free API key from [DeepL](https://www.deepl.com/pro-api):
-- Free tier: 500,000 characters/month
-- More than enough for most subtitle projects
+- Check your API key is correct
+- Verify you haven't exceeded monthly quota (500k chars free tier)
+- Try reducing batch size in code if rate limited
 
-Set your API key:
-```bash
-export DEEPL_API_KEY="your-key-here"
-```
+### No example sentences found
 
-Or pass it directly with `--deepl-key`
+- Verify subtitle folder path is correct
+- Check SRT files are properly formatted
+- Try with `--include-empty` to include words without examples
 
-## 🚀 Quick Start
+## 📚 Additional Resources
 
-### Complete Workflow
+- [Detailed Documentation](docs/README.md) - Complete feature documentation
+- [Quick Start Guide](docs/QUICKSTART.md) - Fast setup instructions
+- [Chinese Text Analyzer](https://www.chinesetextanalyser.com/) - Word selection tool
+- [DeepL API](https://www.deepl.com/pro-api) - Translation service
+- [CC-CEDICT](https://www.mdbg.net/chinese/dictionary?page=cc-cedict) - Chinese dictionary
 
-```bash
-# 1. Merge SRT files (unchanged)
-python merge_srt.py "Subtitles Folder" merged_output.txt
+## 🤝 Contributing
 
-# 2. Open merged_output.txt in Chinese Text Analyzer
-#    Export word list to: wordlist.tsv
-
-# 3. Run enhanced sentence extractor
-python sentence_extractor_enhanced.py \
-    wordlist.tsv \
-    "Subtitles Folder" \
-    --output anki_cards.tsv \
-    --deepl-key YOUR_KEY \
-    --target-lang EN-US
-
-# 4. Import anki_cards.tsv into Anki
-```
-
-### First Run Setup
-
-The script will automatically:
-1. Download CC-CEDICT dictionary (~30MB) on first run
-2. Cache it locally as `cedict_ts.u8`
-3. Use cached version for future runs
-
-## 📖 Usage Examples
-
-### Basic Usage (no translation/definitions)
-
-```bash
-python sentence_extractor_enhanced.py wordlist.tsv "Subtitles" -o output.tsv
-```
-
-### With DeepL Translation Only
-
-```bash
-python sentence_extractor_enhanced.py wordlist.tsv "Subtitles" \
-    --deepl-key YOUR_KEY \
-    --target-lang EN-US
-```
-
-### With CC-CEDICT Definitions Only
-
-```bash
-python sentence_extractor_enhanced.py wordlist.tsv "Subtitles" \
-    --no-translate
-```
-
-### Full Features (Translation + Definitions)
-
-```bash
-python sentence_extractor_enhanced.py wordlist.tsv "Subtitles" \
-    --deepl-key YOUR_KEY \
-    --target-lang CS  # Czech, for example
-```
-
-### Translate to Different Languages
-
-Supported languages: `EN-US`, `EN-GB`, `CS` (Czech), `DE`, `ES`, `FR`, `IT`, `JA`, `PL`, `PT`, `RU`, etc.
-
-```bash
-# German
---target-lang DE
-
-# Czech
---target-lang CS
-
-# Japanese
---target-lang JA
-```
-
-## 📊 Output Fields (Anki TSV)
-
-The enhanced output includes **13 fields**:
-
-1. **cloze_simplified** - Sentence with cloze deletion (简体)
-2. **cloze_traditional** - Sentence with cloze deletion (繁體)
-3. **word_simplified** - Target word (简体)
-4. **word_traditional** - Target word with variants (繁體)
-5. **pinyin** - Primary pinyin reading
-6. **pinyin_variants** - Alternative readings
-7. **is_name** - Proper noun indicator
-8. **sentence_simplified** - Full sentence (简体)
-9. **sentence_traditional** - Full sentence (繁體)
-10. **translation** - 🆕 DeepL translation
-11. **definition** - 🆕 CC-CEDICT definition
-12. **episode** - Source episode/file
-13. *(Line number not exported)*
-
-## 🎴 Anki Card Template
-
-### Front Template
-```html
-<div class="sentence">{{cloze_simplified}}</div>
-<div class="pinyin">{{pinyin}}</div>
-```
-
-### Back Template
-```html
-{{FrontSide}}
-<hr>
-<div class="word">{{word_simplified}} - {{word_traditional}}</div>
-<div class="translation">{{translation}}</div>
-<div class="definition">{{definition}}</div>
-{{#pinyin_variants}}
-<div class="variants">Also: {{pinyin_variants}}</div>
-{{/pinyin_variants}}
-<div class="source">{{episode}}</div>
-```
-
-## 🛠️ Advanced Options
-
-### Skip Translation (Use Cached Definitions Only)
-
-```bash
-python sentence_extractor_enhanced.py wordlist.tsv "Subtitles" \
-    --no-translate
-```
-
-### Skip Definitions (Translation Only)
-
-```bash
-python sentence_extractor_enhanced.py wordlist.tsv "Subtitles" \
-    --deepl-key YOUR_KEY \
-    --no-definitions
-```
-
-### Custom CC-CEDICT Path
-
-```bash
-python sentence_extractor_enhanced.py wordlist.tsv "Subtitles" \
-    --cedict-path /path/to/custom/cedict.u8
-```
-
-### Include Words Without Example Sentences
-
-```bash
-python sentence_extractor_enhanced.py wordlist.tsv "Subtitles" \
-    --include-empty
-```
-
-## 🔧 Standalone Tools
-
-### Test CC-CEDICT Dictionary
-
-```bash
-# Download and test dictionary lookups
-python cedict_manager.py
-
-# Use custom path
-python cedict_manager.py /path/to/cedict.u8
-```
-
-### Merge SRT Files (Original)
-
-```bash
-python merge_srt.py "Subtitles Folder" output.txt
-```
-
-Creates two files:
-- `output.txt` - Clean text for Chinese Text Analyzer
-- `output_with_episodes.txt` - Text with episode markers
-
-## 💡 Tips
-
-### Rate Limits
-- DeepL Free: 500,000 chars/month
-- Script includes rate limiting (0.5s between batches)
-- Batch size: 50 sentences at a time
-
-### Definition Format
-Definitions show as: `pinyin: definition [+N more]`
-- Example: `Sū: surname Su; [+2 more]`
-- Pinyin matching prefers CTA export pinyin
-
-### Translation Quality
-- DeepL is context-aware for Chinese
-- Works well with colloquial dialogue
-- Preserves meaning better than Google Translate
-
-### Storage
-- CC-CEDICT file: ~30MB
-- Loads in 2-3 seconds
-- Contains ~120,000 entries
-
-## 🐛 Troubleshooting
-
-### "DeepL not installed"
-```bash
-pip install deepl
-```
-
-### "No API key provided"
-```bash
-export DEEPL_API_KEY="your-key"
-# Or use --deepl-key flag
-```
-
-### "Dictionary file not found"
-Script auto-downloads on first run. If download fails:
-```bash
-python cedict_manager.py  # Manual download
-```
-
-### Translation Errors
-- Check API key is valid
-- Check character limit (500k free tier)
-- Script continues on errors, check console output
-
-## 📝 Example Output
-
-```tsv
-cloze_simplified	cloze_traditional	word_simplified	word_traditional	pinyin	pinyin_variants	is_name	sentence_simplified	sentence_traditional	translation	definition	episode
-我{{c1::需要}}帮助	我{{c1::需要}}幫助	需要	需要	xūyào		需要	我需要帮助	我需要幫助	I need help	xū yào: to need; to want; to demand; needs; to require	ep01
-```
-
-## 🔄 Workflow Diagram
-
-```
-SRT Files
-    ↓ [merge_srt.py]
-Merged Text
-    ↓ [Chinese Text Analyzer]
-Word List (TSV)
-    ↓ [sentence_extractor_enhanced.py]
-    ├─→ Match sentences from SRTs
-    ├─→ Look up in CC-CEDICT
-    └─→ Translate via DeepL
-    ↓
-Anki TSV (with translations & definitions)
-    ↓ [Import to Anki]
-Flashcards Ready! 🎴
-```
-
-## 📚 Resources
-
-- [DeepL API Docs](https://www.deepl.com/docs-api)
-- [CC-CEDICT Project](https://cc-cedict.org/)
-- [Chinese Text Analyzer](https://www.chinesetextanalyser.com/)
-- [Anki Manual](https://docs.ankiweb.net/)
+Contributions welcome! Please feel free to submit issues or pull requests.
 
 ## 📄 License
 
-Scripts are provided as-is. CC-CEDICT is licensed under Creative Commons BY-SA 4.0.
+This project is open source and available under the MIT License.
 
----
+## 🙏 Acknowledgments
 
-**Questions?** Check the troubleshooting section or open an issue!
+- CC-CEDICT for the comprehensive Chinese-English dictionary
+- DeepL for high-quality translations
+- Chinese Text Analyzer for word segmentation and selection
+- The Anki community for making language learning accessible
